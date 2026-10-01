@@ -1,236 +1,77 @@
-import React, { useState } from "react";
+un fichier index.html :
+
+Erreur : IncorrectBrowser - IncorrectBrowser
+HTML
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empire City Manager</title>
+style.css
+</head>
+<body>
  
-export default function CityEmpireGame() {
-const [gold, setGold] = useState(1000);
-const [population, setPopulation] = useState(100);
-const [happiness, setHappiness] = useState(70);
-const [diplomacy, setDiplomacy] = useState(50);
-const [alliances, setAlliances] = useState(0);
-const [buildings, setBuildings] = useState({
-houses: 5,
-farms: 2,
-factories: 1,
-});
+<h1>🏛 Empire City Manager</h1>
  
-const [event, setEvent] = useState("Bienvenue dans votre cité !");
-const [quest, setQuest] = useState({
-text: "Construire 10 maisons",
-target: 10,
-reward: 500,
-});
- 
-const buildHouse = () => {
-if (gold < 100) return;
- 
-setGold(gold - 100);
- 
-setBuildings({
-...buildings,
-houses: buildings.houses + 1,
-});
- 
-setPopulation(population + 10);
- 
-if (buildings.houses + 1 >= quest.target) {
-setGold((g) => g + quest.reward);
-setQuest({
-text: "Atteindre 200 habitants",
-target: 200,
-reward: 1000,
-});
-setEvent("Quête réussie ! +500 or");
-}
-};
- 
-const buildFarm = () => {
-if (gold < 150) return;
-setGold(gold - 150);
- 
-setBuildings({
-...buildings,
-farms: buildings.farms + 1,
-});
- 
-setPopulation(population + 5);
-};
- 
-const buildFactory = () => {
-if (gold < 300) return;
- 
-setGold(gold - 300);
- 
-setBuildings({
-...buildings,
-factories: buildings.factories + 1,
-});
- 
-setGold((g) => g + 100);
-setHappiness((h) => h - 5);
-};
- 
-const nextTurn = () => {
-const income =
-buildings.houses * 10 +
-buildings.farms * 20 +
-buildings.factories * 50;
- 
-setGold((g) => g + income);
- 
-const random = Math.floor(Math.random() * 4);
- 
-if (random === 0) {
-setEvent("🔥 Incendie dans un quartier !");
-setGold((g) => Math.max(0, g - 150));
-setHappiness((h) => h - 10);
-}
- 
-if (random === 1) {
-setEvent("🎉 Festival populaire !");
-setHappiness((h) => Math.min(100, h + 10));
-}
- 
-if (random === 2) {
-setEvent("⚠ Révolution en préparation !");
-setHappiness((h) => h - 15);
-}
- 
-if (random === 3) {
-setEvent("✅ Aucun incident majeur.");
-}
- 
-if (happiness < 20) {
-setEvent("🚩 Révolution ! La population se rebelle.");
-setGold((g) => Math.max(0, g - 500));
-}
-};
- 
-const taxIncrease = () => {
-setGold((g) => g + 200);
-setHappiness((h) => h - 10);
-setEvent("Augmentation des impôts.");
-};
- 
-const makeAlliance = () => {
-if (diplomacy < 40) {
-setEvent("La diplomatie est trop faible.");
-return;
-}
- 
-setAlliances((a) => a + 1);
-setDiplomacy((d) => d - 20);
-setEvent("Nouvelle alliance signée.");
-};
- 
-const diplomaticMission = () => {
-setDiplomacy((d) => Math.min(100, d + 15));
-setGold((g) => g - 50);
-setEvent("Mission diplomatique réussie.");
-};
- 
-return (
-<div className="min-h-screen bg-slate-900 text-white p-6">
-<h1 className="text-4xl font-bold mb-4">
-🏛 Empire City Manager
-</h1>
- 
-<div className="grid md:grid-cols-3 gap-4 mb-6">
-<div className="bg-slate-800 p-4 rounded-2xl">
-<h2 className="font-bold">Population</h2>
-<p>{population}</p>
+<div class="stats">
+<div class="card">
+<h2>Population</h2>
+<p id="population">100</p>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl">
-<h2 className="font-bold">Or</h2>
-<p>{gold}</p>
+<div class="card">
+<h2>Or</h2>
+<p id="gold">1000</p>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl">
-<h2 className="font-bold">Bonheur</h2>
-<p>{happiness}%</p>
+<div class="card">
+<h2>Bonheur</h2>
+<p id="happiness">70%</p>
 </div>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl mb-4">
-<h2 className="text-xl font-bold">🏗 Bâtiments</h2>
-<p>Maisons : {buildings.houses}</p>
-<p>Fermes : {buildings.farms}</p>
-<p>Usines : {buildings.factories}</p>
+<div class="card">
+<h2>🏗 Bâtiments</h2>
+<p>Maisons : <span id="houses">5</span></p>
+<p>Fermes : <span id="farms">2</span></p>
+<p>Usines : <span id="factories">1</span></p>
 </div>
  
-<div className="flex gap-2 flex-wrap mb-4">
-<button
-onClick={buildHouse}
-className="bg-blue-600 px-4 py-2 rounded-xl"
->
-Construire Maison
-</button>
- 
-<button
-onClick={buildFarm}
-className="bg-green-600 px-4 py-2 rounded-xl"
->
-Construire Ferme
-</button>
- 
-<button
-onClick={buildFactory}
-className="bg-orange-600 px-4 py-2 rounded-xl"
->
-Construire Usine
-</button>
+<div class="buttons">
+<button onclick="buildHouse()">Construire Maison</button>
+<button onclick="buildFarm()">Construire Ferme</button>
+<button onclick="buildFactory()">Construire Usine</button>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl mb-4">
-<h2 className="text-xl font-bold">📜 Quête</h2>
-<p>{quest.text}</p>
-<p>Récompense : {quest.reward} or</p>
+<div class="card">
+<h2>📜 Quête</h2>
+<p id="quest">Construire 10 maisons</p>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl mb-4">
-<h2 className="text-xl font-bold">🏛 Politique</h2>
- 
-<button
-onClick={taxIncrease}
-className="bg-red-600 px-4 py-2 rounded-xl mt-2"
->
-Augmenter les impôts
-</button>
+<div class="card">
+<h2>🏛 Politique</h2>
+<button onclick="taxIncrease()">Augmenter les impôts</button>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl mb-4">
-<h2 className="text-xl font-bold">🤝 Diplomatie</h2>
- 
-<p>Relation diplomatique : {diplomacy}</p>
-<p>Alliances : {alliances}</p>
- 
-<div className="flex gap-2 mt-2">
-<button
-onClick={diplomaticMission}
-className="bg-cyan-600 px-4 py-2 rounded-xl"
->
-Mission diplomatique
-</button>
- 
-<button
-onClick={makeAlliance}
-className="bg-purple-600 px-4 py-2 rounded-xl"
->
-Former une alliance
-</button>
-</div>
+<div class="card">
+<h2>🤝 Diplomatie</h2>
+<p>Diplomatie : <span id="diplomacy">50</span></p>
+<p>Alliances : <span id="alliances">0</span></p>
+<button onclick="diplomaticMission()">Mission diplomatique</button>
+<button onclick="makeAlliance()">Former une alliance</button>
 </div>
  
-<div className="bg-slate-800 p-4 rounded-2xl mb-4">
-<h2 className="text-xl font-bold">📰 Actualité</h2>
-<p>{event}</p>
+<div class="card">
+<h2>📰 Actualité</h2>
+<p id="event">Bienvenue dans votre cité !</p>
 </div>
  
-<button
-onClick={nextTurn}
-className="bg-yellow-500 text-black font-bold px-6 py-3 rounded-2xl"
->
+<button class="next-turn" onclick="nextTurn()">
 Tour suivant
 </button>
-</div>
-);
-}
+ 
+script.jsscript>
+ 
+</body>
+</html>
